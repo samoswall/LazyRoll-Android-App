@@ -3,6 +3,7 @@ package com.example.lazyrolls;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -76,6 +77,17 @@ public class MainActivity extends AppCompatActivity {
             //добавляем елементы в linearlayout
             linear.addView(view);
 
+            linear.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //переходим с первой на вторую активность
+                    Intent intent = new Intent(MainActivity.this, RoomsActivity.class);
+                    intent.putExtra("name_room", "Room " + counter);
+                    MainActivity.this.startActivity(intent);
+                }
+            });
+
+
             // Referencing and Initializing the button
             ImageButton button_room_menu = (ImageButton) view.findViewById(R.id.room_menu_button);
             // Setting onClick behavior to the button
@@ -122,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
         return true;
     }
+
 
 
 }
