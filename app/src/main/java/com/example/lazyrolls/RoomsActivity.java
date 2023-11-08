@@ -21,23 +21,8 @@ import java.util.List;
 public class RoomsActivity extends AppCompatActivity {
 
     private List<View> all_device;    //Создаем список устройств в комнате
-    TextView textView;
 
-    private String getRouterIPAddress() {
-        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-        DhcpInfo dhcp = wifiManager.getDhcpInfo();
-        int ip = dhcp.gateway;
-        return FormatIP(ip);
-    }
-    private String FormatIP(int ip) {
-        return String.format(
-                "%d.%d.%d",
-                (ip & 0xff),
-                (ip >> 8 & 0xff),
-                (ip >> 16 & 0xff)  //,
-                //  (ip >> 24 & 0xff)
-        );
-    }
+
 
 
     @Override
@@ -65,7 +50,7 @@ public class RoomsActivity extends AppCompatActivity {
         String msg = "";
         int itemId = item.getItemId();
         if (itemId == R.id.add_device) {
-            msg = "Add clicked";
+/*
             final LinearLayout linear = (LinearLayout) findViewById(R.id.linear_devices);   //находим наш первый linear в activity_main.xml
             //берем наш кастомный лейаут находим через него все наши кнопки и едит тексты, задаем нужные данные
             final View view = getLayoutInflater().inflate(R.layout.layout_device, null);
@@ -78,7 +63,9 @@ public class RoomsActivity extends AppCompatActivity {
             all_device.add(view);
             //добавляем елементы в linearlayout
             linear.addView(view);
-
+*/
+            Intent intent = new Intent(RoomsActivity.this, ScanActivity.class);
+            RoomsActivity.this.startActivity(intent);
         }
         return true;
     }

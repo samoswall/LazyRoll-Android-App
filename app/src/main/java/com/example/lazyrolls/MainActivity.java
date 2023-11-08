@@ -1,11 +1,15 @@
 package com.example.lazyrolls;
 
 import androidx.annotation.NonNull;
+import android.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
@@ -15,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -30,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private List<View> all_rooms;    //Создаем список rooms которые будут создаваться
     private int counter = 0;     //счетчик чисто декоративный для визуального отображения rooms
     private static final String TAG = "MainActivity";
+    private String m_Text = "";
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +118,35 @@ public class MainActivity extends AppCompatActivity {
                                 } catch(IndexOutOfBoundsException ex) {
                                     ex.printStackTrace();
                                 }
+                            } else if (menuItem.getItemId() == R.id.room_menu_rename) {
+
+                                Context context = MainActivity.this;
+                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                builder.setTitle("Введите имя комнаты");
+                                // Set up the input
+                                final EditText input_name_room = new EditText(context);
+                                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                                input_name_room.setInputType(InputType.TYPE_CLASS_TEXT);
+                                builder.setView(input_name_room);
+                                // Set up the buttons
+                                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        m_Text = input_name_room.getText().toString();
+                                    }
+                                });
+                                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                });
+                                builder.show();
+
+
+
+
+
                             }
                             // Toast message on menu item clicked
                             Toast.makeText(MainActivity.this, "You Clicked " + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
@@ -126,8 +162,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        } else if (itemId == R.id.rename_room) {
+        } else if (itemId == R.id.room_menu_rename) {
             msg = "Settigs clicked";
+
+
         } else if (itemId ==  R.id.delete_room) {
             msg = "Info clicked";
         }

@@ -3,12 +3,13 @@
     <item
         android:id="@+id/room_menu_rename"
         android:title="Rename" />
-
     <item
-        android:id="@+id/room_menu_delete"
-        android:title="Delete" />
-
+        android:id="@+id/room_menu_change_picture"
+        android:title="Change picture" />
     <item
         android:id="@+id/room_menu_view_preset"
         android:title="Preset visible" />
+    <item
+        android:id="@+id/room_menu_delete"
+        android:title="Delete" />
 </menu>
