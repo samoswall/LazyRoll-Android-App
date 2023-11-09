@@ -162,11 +162,11 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        } else if (itemId == R.id.room_menu_rename) {
+        } else if (itemId == R.id.settings_room) {
             msg = "Settigs clicked";
 
 
-        } else if (itemId ==  R.id.delete_room) {
+        } else if (itemId ==  R.id.info_room) {
             msg = "Info clicked";
         }
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();

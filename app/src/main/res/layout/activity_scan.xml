@@ -7,21 +7,28 @@
     android:layout_height="match_parent">
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:id="@+id/scrollView2"
+        android:layout_width="414dp"
+        android:layout_height="661dp"
+        tools:layout_editor_absoluteX="-3dp">
 
         <LinearLayout
             android:id="@+id/all_scan_devices"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/Animation.Design.BottomSheetDialog"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/scan_start_button"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:text="Scan" />
         </LinearLayout>
+
     </ScrollView>
+
+    <Button
+        android:id="@+id/scan_start_button"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Done"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,13 +11,13 @@
         android:icon="@drawable/baseline_add_24"
         android:orderInCategory="100" />
     <item
-        android:id="@+id/rename_room"
+        android:id="@+id/settings_room"
         android:title="Settings"
         android:visible="true"
         android:icon="@drawable/baseline_settings_24"
         android:orderInCategory="101" />
     <item
-        android:id="@+id/delete_room"
+        android:id="@+id/info_room"
         android:title="Info"
         android:visible="true"
         android:icon="@drawable/baseline_info_24"
