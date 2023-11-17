@@ -2,19 +2,26 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/device_info"
-        android:title="Device info" />
-
-    <item
-        android:id="@+id/device_delete"
-        android:title="Device delete" />
-
-    <item
-        android:id="@+id/device_add_slave"
-        android:title="Device add slave" />
-    <item
-        android:id="@+id/device_preset_show"
-        android:title="Preset button show" />
+        android:title="Информация"
+        android:icon="@drawable/baseline_info_24"/>
     <item
         android:id="@+id/device_page"
-        android:title="Go device page" />
+        android:title="Перейти в устройство"
+        android:icon="@drawable/baseline_web_24"/>
+    <item
+        android:id="@+id/device_color"
+        android:title="Цвет шторы"
+        android:icon="@drawable/baseline_color_lens_24"/>
+    <item
+        android:id="@+id/device_preset_show"
+        android:title="Видимость пресетов"
+        android:icon="@drawable/baseline_filter_5_24"/>
+    <item
+        android:id="@+id/device_add_slave"
+        android:title="Добавить ведомый"
+        android:icon="@drawable/baseline_add_24"/>
+    <item
+        android:id="@+id/device_delete"
+        android:title="Удалить"
+        android:icon="@drawable/baseline_delete_forever_24"/>
 </menu>

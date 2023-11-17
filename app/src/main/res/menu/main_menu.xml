@@ -6,19 +6,19 @@
 
     <item
         android:id="@+id/add_room"
-        android:title="@string/add_room"
+        android:title="Добавить комнату"
         android:visible="true"
         android:icon="@drawable/baseline_add_24"
         android:orderInCategory="100" />
     <item
         android:id="@+id/settings_room"
-        android:title="Settings"
+        android:title="Настройки"
         android:visible="true"
         android:icon="@drawable/baseline_settings_24"
         android:orderInCategory="101" />
     <item
         android:id="@+id/info_room"
-        android:title="Info"
+        android:title="Информация"
         android:visible="true"
         android:icon="@drawable/baseline_info_24"
         android:orderInCategory="102" />

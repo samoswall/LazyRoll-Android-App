@@ -1,24 +1,15 @@
 package com.example.lazyrolls;
 
+import android.content.Intent;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.ArrayList;
 import java.io.IOException;
-import java.util.List;
-
-// import org.json.XML;
-
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -26,47 +17,29 @@ import okhttp3.Response;
 
 public class ScanActivity extends AppCompatActivity {
 
-    private List<String> dev_arr;
-    private List<String> ipList;
+    ArrayList<Device_state> scan_devices = new ArrayList<Device_state>();
+    ArrayList<Device_state> check_devices = new ArrayList<Device_state>();
+    Scan_adapter boxAdapter;
 
-    private String getRouterIPAddress() {
-        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-        DhcpInfo dhcp = wifiManager.getDhcpInfo();
-        int ip = dhcp.gateway;
-        return FormatIP(ip);
-    }
-    private String FormatIP(int ip) {
-        return String.format(
-                "%d.%d.%d",
-                (ip & 0xff),
-                (ip >> 8 & 0xff),
-                (ip >> 16 & 0xff)  //,
-                //  (ip >> 24 & 0xff)
-        );
-    }
 
-    private Handler handler;
-    private int count = 0;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
-        setTitle("Поиск в сети " + getRouterIPAddress() + ".1-254");
-        dev_arr = new ArrayList<String>();
-        ipList = new ArrayList<String>();
 
-        final LinearLayout linear = (LinearLayout) findViewById(R.id.all_scan_devices);   //находим наш первый linear в activity_main.xml
-        //берем наш кастомный лейаут находим через него все наши кнопки и едит тексты, задаем нужные данные
-        final View view = getLayoutInflater().inflate(R.layout.scaned_device, null);
+        // создаем адаптер
+        fillData();
+        boxAdapter = new Scan_adapter(this, scan_devices);
 
-        TextView text_dev_ip = (TextView) view.findViewById(R.id.scan_IP);
-        TextView text_dev_name = (TextView) view.findViewById(R.id.scan_Name);
+        // настраиваем список
+        ListView lvMain = (ListView) findViewById(R.id.scan_lvMain);
+        lvMain.setAdapter(boxAdapter);
+    }
 
-        Button start_scan = (Button) findViewById(R.id.scan_start_button);
-
-        for (int i = 100; i < 110; i++) {
-            String url = "http://" + getRouterIPAddress() + "." + i + "/xml";
-            Log.i("---!---", url);
+    // генерируем данные для адаптера
+    public void fillData() {
+        for (int i = 1; i <= 30; i++) {                                             //    ТУТ ПОТОМ ПОМЕНЯТЬ !!!
+            String url = "http://192.168.1" + "." + i + "/xml";
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -83,42 +56,52 @@ public class ScanActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    Log.i("---!---", "Успешно получено " + responseData);
-
                     if (responseData.indexOf("Curtain") > 1) {
-                        String dev_ip = responseData.substring(responseData.indexOf("<IP>")+4, responseData.indexOf("</IP>"));
-                        String dev_name = responseData.substring(responseData.indexOf("<Name>")+6, responseData.indexOf("</Name>"));
-                        String dev_hostname = responseData.substring(responseData.indexOf("<Hostname>")+10, responseData.indexOf("</Hostname>"));
-                        String dev_now = responseData.substring(responseData.indexOf("<Now>")+5, responseData.indexOf("</Now>"));
-                        String dev_max = responseData.substring(responseData.indexOf("<Max>")+5, responseData.indexOf("</Max>"));
-                        dev_arr.clear();
-                        dev_arr.add(dev_ip);
-                        dev_arr.add(dev_name);
-                        dev_arr.add(dev_hostname);
-                        dev_arr.add(dev_now);
-                        dev_arr.add(dev_max);
-                        ipList.add(dev_arr.toString());
-                        Log.i("---!---", "ipList " + ipList);
+                        String dev_ip = responseData.substring(responseData.indexOf("<IP>") + 4, responseData.indexOf("</IP>"));
+                        String dev_name = responseData.substring(responseData.indexOf("<Name>") + 6, responseData.indexOf("</Name>"));
+                        String dev_hostname = responseData.substring(responseData.indexOf("<Hostname>") + 10, responseData.indexOf("</Hostname>"));
+                        String dev_now = responseData.substring(responseData.indexOf("<Now>") + 5, responseData.indexOf("</Now>"));
+                        String dev_max = responseData.substring(responseData.indexOf("<Max>") + 5, responseData.indexOf("</Max>"));
+
+                        scan_devices.add(new Device_state(dev_ip, dev_name, dev_hostname, dev_now, dev_max, "false"));
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                text_dev_ip.setText(dev_ip);
-                                text_dev_name.setText(dev_name);
-                            //    linear.addView(view);                                   // Тут ошибка! Вылетает apk
+                                boxAdapter.notifyDataSetChanged();
                             }
-                            });
-                        count++;
+                        });
                     }
                 }
             }).start();
         }
+    }
 
-        start_scan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(ScanActivity.this, "После сканирования", Toast.LENGTH_SHORT).show();
+    // выводим информацию о корзине
+    public void showResult(View v) {
+        for (Device_state p : boxAdapter.getBox()) {
+            if (p.Check_box == "true")
+                check_devices.add(p);
+        }
+        // Передаем в RoomsActivity
+        Intent intent = new Intent();
+        intent.putExtra("keyScan", check_devices);
+        setResult(RESULT_OK, intent);
+        finish();
+    }
 
-            }
-        });
+    private String getRouterIPAddress() {
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+        DhcpInfo dhcp = wifiManager.getDhcpInfo();
+        int ip = dhcp.gateway;
+        return FormatIP(ip);
+    }
+    private String FormatIP(int ip) {
+        return String.format(
+                "%d.%d.%d",
+                (ip & 0xff),
+                (ip >> 8 & 0xff),
+                (ip >> 16 & 0xff)  //,
+                //  (ip >> 24 & 0xff)
+        );
     }
 }

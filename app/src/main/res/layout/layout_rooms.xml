@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <ImageButton
         android:id="@+id/room_menu_button"
@@ -12,19 +12,20 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
+        android:background="@null"
+        android:scaleType="fitXY"
         android:src="@drawable/baseline_more_vert_24"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@null"
-        android:scaleType="fitXY"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/room_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
         android:text="Room"
+        android:textSize="20dp"
+        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/image_room"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,59 +34,120 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="4dp"
         android:text="Devices 0"
         app:layout_constraintStart_toEndOf="@+id/image_room"
         app:layout_constraintTop_toBottomOf="@+id/room_name" />
 
     <ImageButton
-        android:id="@+id/imageButton_up"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:id="@+id/room_imageButton_up"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
+        android:background="@null"
         android:scaleType="fitXY"
         android:src="@drawable/baseline_arrow_circle_up_24"
         android:visibility="visible"
         app:layout_constraintStart_toEndOf="@+id/image_room"
-        app:layout_constraintTop_toBottomOf="@+id/device_sum"
-        android:background="@null"/>
+        app:layout_constraintTop_toBottomOf="@+id/device_sum" />
 
     <ImageButton
         android:id="@+id/imageButton_stop"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="4dp"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        android:background="@null"
         android:scaleType="fitXY"
         android:src="@drawable/baseline_stop_circle_24"
         android:visibility="visible"
         app:layout_constraintEnd_toStartOf="@+id/imageButton_down"
         app:layout_constraintHorizontal_bias="0.49"
-        app:layout_constraintStart_toEndOf="@+id/imageButton_up"
-        app:layout_constraintTop_toBottomOf="@+id/device_sum"
-        android:background="@null"/>
+        app:layout_constraintStart_toEndOf="@+id/room_imageButton_up"
+        app:layout_constraintTop_toBottomOf="@+id/device_sum" />
 
     <ImageButton
         android:id="@+id/imageButton_down"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="5dp"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
         android:layout_marginEnd="5dp"
+        android:background="@null"
         android:scaleType="fitXY"
         android:src="@drawable/baseline_arrow_circle_down_24"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/device_sum"
-        android:background="@null"/>
+        app:layout_constraintTop_toBottomOf="@+id/device_sum" />
 
     <ImageView
         android:id="@+id/image_room"
-        android:layout_width="161dp"
-        android:layout_height="108dp"
-        android:layout_marginStart="5dp"
+        android:layout_width="165dp"
+        android:layout_height="102dp"
+        android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
-        android:src="@mipmap/room1"
+        android:paddingBottom="5dp"
+        android:src="@drawable/picroom"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageButton
+        android:id="@+id/room_preset_1"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="1dp"
+        android:background="@null"
+        android:scaleType="fitXY"
+        android:src="@drawable/baseline_looks_one_24"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/room_preset_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_room" />
+
+    <ImageButton
+        android:id="@+id/room_preset_2"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="1dp"
+        android:background="@null"
+        android:scaleType="fitXY"
+        android:src="@drawable/baseline_looks_two_24"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/room_preset_3"
+        app:layout_constraintStart_toEndOf="@+id/room_preset_1"
+        app:layout_constraintTop_toBottomOf="@+id/image_room" />
+
+    <ImageButton
+        android:id="@+id/room_preset_3"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="1dp"
+        android:background="@null"
+        android:scaleType="fitXY"
+        android:src="@drawable/baseline_looks_3_24"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/room_preset_4"
+        app:layout_constraintStart_toEndOf="@+id/room_preset_2"
+        app:layout_constraintTop_toBottomOf="@+id/image_room" />
+
+    <ImageButton
+        android:id="@+id/room_preset_4"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="1dp"
+        android:background="@null"
+        android:scaleType="fitXY"
+        android:src="@drawable/baseline_looks_4_24"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/room_preset_5"
+        app:layout_constraintStart_toEndOf="@+id/room_preset_3"
+        app:layout_constraintTop_toBottomOf="@+id/image_room" />
+
+    <ImageButton
+        android:id="@+id/room_preset_5"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="1dp"
+        android:background="@null"
+        android:scaleType="fitXY"
+        android:src="@drawable/baseline_looks_5_24"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/room_preset_4"
+        app:layout_constraintTop_toBottomOf="@+id/image_room" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,28 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="414dp"
+    <ListView
+        android:id="@+id/scan_lvMain"
+        android:layout_width="match_parent"
         android:layout_height="661dp"
-        tools:layout_editor_absoluteX="-3dp">
-
-        <LinearLayout
-            android:id="@+id/all_scan_devices"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-        </LinearLayout>
-
-    </ScrollView>
+        tools:ignore="MissingConstraints" />
 
     <Button
-        android:id="@+id/scan_start_button"
+        android:id="@+id/scan_done_button"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="Done"
+        android:onClick="showResult"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
