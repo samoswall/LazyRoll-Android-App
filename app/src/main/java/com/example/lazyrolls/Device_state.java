@@ -9,14 +9,22 @@ public class Device_state implements Serializable {
      String Now;
      String Max;
      String Check_box;
+     String Role;
+     String Invert_percent;
+     String Color_curtain;
+     String Preset_view;
 
-     Device_state(String ip, String name, String hostname, String now, String max, String check_box) {
+     Device_state(String ip, String name, String hostname, String now, String max, String check_box, String role, String invert_percent, String color_curtain, String preset_view) {
         Name = name;
         Hostname = hostname;
         Ip = ip;
         Now = now;
         Max = max;
         Check_box = check_box;
+        Role = role;
+        Invert_percent = invert_percent;
+        Color_curtain = color_curtain;
+        Preset_view = preset_view;
     }
 
     public String getIp() {
@@ -65,5 +73,37 @@ public class Device_state implements Serializable {
 
     public void setCheck_box(String check_box) {
         this.Check_box = check_box;
+    }
+
+    public String getRole() {
+        return Role;
+    }
+
+    public void setRole(String role) {
+        this.Role = role;
+    }
+
+    public String getInvert_percent() {
+        return Invert_percent;
+    }
+
+    public void setInvert_percent(String invert_percent) {
+        this.Invert_percent = invert_percent;
+    }
+
+    public String getColor_curtain() {
+        return Color_curtain;
+    }
+
+    public void setColor_curtain(String color_curtain) {
+        this.Color_curtain = color_curtain;
+    }
+
+    public String getPreset_view() {
+        return Preset_view;
+    }
+
+    public void setPreset_view(String preset_view) {
+        this.Preset_view = preset_view;
     }
 }

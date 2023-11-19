@@ -45,6 +45,7 @@ public class Rooms_adapter  extends RecyclerView.Adapter<Rooms_adapter.ViewHolde
     public void onBindViewHolder(ViewHolder holder, int position) {
         String room_name = mData.get(position).RoomName;
         holder.room_name_text.setText(room_name);
+        holder.count_devices.setText("Устройств " + String.valueOf(mData.get(position).RoomDevices.size()));
         if (Boolean.parseBoolean(mData.get(position).ShowPreset)) {
             holder.preset_button_1.setVisibility(View.VISIBLE);                                     //Показать пресеты
             holder.preset_button_2.setVisibility(View.VISIBLE);
@@ -116,7 +117,6 @@ public class Rooms_adapter  extends RecyclerView.Adapter<Rooms_adapter.ViewHolde
                             });
                             builder.show();
                         } else if (menuItem.getItemId() == R.id.room_menu_view_preset) {            // Показать или скрыть кнопки пресетов
-                            Log.i("---preset---", mData.get(position).ShowPreset);
                             if (Boolean.parseBoolean(mData.get(position).ShowPreset)) {
                                 holder.preset_button_1.setVisibility(View.GONE);
                                 holder.preset_button_2.setVisibility(View.GONE);
@@ -153,6 +153,7 @@ public class Rooms_adapter  extends RecyclerView.Adapter<Rooms_adapter.ViewHolde
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView room_name_text;
+        TextView count_devices;
         ImageButton room_menu_button;
         ImageButton preset_button_1;
         ImageButton preset_button_2;
@@ -169,6 +170,7 @@ public class Rooms_adapter  extends RecyclerView.Adapter<Rooms_adapter.ViewHolde
             preset_button_3 = itemView.findViewById(R.id.room_preset_3);
             preset_button_4 = itemView.findViewById(R.id.room_preset_4);
             preset_button_5 = itemView.findViewById(R.id.room_preset_5);
+            count_devices = itemView.findViewById(R.id.device_sum);
    //         itemView.setOnClickListener{};
         }
 

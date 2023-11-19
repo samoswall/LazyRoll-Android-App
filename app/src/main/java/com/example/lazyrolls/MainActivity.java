@@ -17,6 +17,10 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import java.lang.reflect.Method;
@@ -93,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    DeviceinRoom.add(new Rooms(input_name_room.getText().toString(), "@drawable/picroom", "false",  Devices));
+                    DeviceinRoom.add(new Rooms(input_name_room.getText().toString(), "@drawable/picroom", "false",  new ArrayList<>() ));
                 }
             });
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -124,13 +128,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onItemClick(View view, int position) {
-        //переходим с первой на вторую активность
-        Intent intent = new Intent(MainActivity.this, RoomsActivity.class);
-        intent.putExtra("room_position", position);
-        intent.putExtra("room_name", DeviceinRoom.get(position).RoomName);
-        intent.putExtra("room_devices", DeviceinRoom.get(position).RoomDevices);
+        //передаем на RoomsActivity
+     //   Intent intent = new Intent(MainActivity.this, RoomsActivity.class);
 
-        MainActivity.this.startActivity(intent);
+
+
+        //переходим на RoomsActivity
+        openRoomsActivity(position);
+
     }
 
     @Override
@@ -158,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String json = gson.toJson(list);
         editor.putString(key, json);
+        Log.i("---save---", json);
         editor.apply();
     }
 
@@ -202,5 +208,47 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 2000);
     }
+
+
+
+
+    // Запуск ожидания ответа от RoomsActivity
+    ActivityResultLauncher<Intent> launchRoomsActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent data = result.getData();
+                // Получаем от ScanActivity
+                Devices  = (ArrayList<Device_state>) data.getSerializableExtra("keyRoom");
+                int t_pos = data.getIntExtra("room_position", -1);
+                DeviceinRoom.get(t_pos).RoomDevices = Devices;
+
+
+
+Log.i("--otroom--", String.valueOf(t_pos));
+                Gson gson = new Gson();
+                String json = gson.toJson(Devices);
+                Log.i("---otroom-json---", json);
+
+
+
+
+
+                adapter.notifyDataSetChanged();
+            }
+        }
+    });
+
+    //переход на RoomsActivity
+    public void openRoomsActivity(int position) {
+        Intent intent = new Intent(MainActivity.this, RoomsActivity.class);
+
+        intent.putExtra("room_position", position);
+        intent.putExtra("room_name", DeviceinRoom.get(position).RoomName);
+        intent.putExtra("room_devices", DeviceinRoom.get(position).RoomDevices);
+
+        launchRoomsActivity.launch(intent);
+    }
+
 
 }

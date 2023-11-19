@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        android:text="Devices Online"
+        android:text="Devices Offline"
         app:layout_constraintStart_toEndOf="@+id/image_device"
         app:layout_constraintTop_toBottomOf="@+id/device_name" />
 
@@ -69,9 +69,8 @@
         android:scaleType="fitXY"
         android:src="@drawable/baseline_stop_circle_24"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/image_device"
         app:layout_constraintEnd_toStartOf="@+id/dev_imageButton_down"
-        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toEndOf="@+id/dev_imageButton_up" />
 
     <ImageButton
@@ -84,7 +83,7 @@
         android:scaleType="fitXY"
         android:src="@drawable/baseline_arrow_circle_down_24"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/image_device"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
@@ -94,33 +93,87 @@
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
         android:paddingBottom="5dp"
-        android:src="@drawable/window"
+        android:src="@drawable/window2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/blind"
-        android:layout_width="166dp"
-        android:layout_height="158dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="9dp"
-        android:background="?attr/colorPrimary"
+        android:layout_width="151dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="8dp"
+        android:background="#FF6750A4"
         android:minHeight="1dp"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:visibility="visible" />
 
-    <Button
-        android:id="@+id/preset_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:text="Button"
+    <ImageButton
+        android:id="@+id/device_preset_1"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="1dp"
+        android:background="@null"
+        android:scaleType="fitXY"
+        android:src="@drawable/baseline_looks_one_24"
         android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/device_preset_2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image_device" />
 
+    <ImageButton
+        android:id="@+id/device_preset_2"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="1dp"
+        android:background="@null"
+        android:scaleType="fitXY"
+        android:src="@drawable/baseline_looks_two_24"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/device_preset_3"
+        app:layout_constraintStart_toEndOf="@+id/device_preset_1"
+        app:layout_constraintTop_toBottomOf="@+id/image_device" />
+
+    <ImageButton
+        android:id="@+id/device_preset_3"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="1dp"
+        android:background="@null"
+        android:scaleType="fitXY"
+        android:src="@drawable/baseline_looks_3_24"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/device_preset_4"
+        app:layout_constraintStart_toEndOf="@+id/device_preset_2"
+        app:layout_constraintTop_toBottomOf="@+id/image_device" />
+
+    <ImageButton
+        android:id="@+id/device_preset_4"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="1dp"
+        android:background="@null"
+        android:scaleType="fitXY"
+        android:src="@drawable/baseline_looks_4_24"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/device_preset_5"
+        app:layout_constraintStart_toEndOf="@+id/device_preset_3"
+        app:layout_constraintTop_toBottomOf="@+id/image_device" />
+
+    <ImageButton
+        android:id="@+id/device_preset_5"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="1dp"
+        android:background="@null"
+        android:scaleType="fitXY"
+        android:src="@drawable/baseline_looks_5_24"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/device_preset_4"
+        app:layout_constraintTop_toBottomOf="@+id/image_device" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

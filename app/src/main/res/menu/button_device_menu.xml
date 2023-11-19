@@ -17,6 +17,10 @@
         android:title="Видимость пресетов"
         android:icon="@drawable/baseline_filter_5_24"/>
     <item
+        android:id="@+id/device_invert_percent"
+        android:title="Инвертировать положение"
+        android:icon="@drawable/baseline_percent_24"/>
+    <item
         android:id="@+id/device_add_slave"
         android:title="Добавить ведомый"
         android:icon="@drawable/baseline_add_24"/>

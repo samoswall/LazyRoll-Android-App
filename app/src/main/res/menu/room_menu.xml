@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <item
         android:id="@+id/room_menu_rename"
         android:title="Изменить название"
@@ -9,7 +11,7 @@
         android:id="@+id/room_menu_change_picture"
         android:title="Поменять картинку"
         android:icon="@drawable/baseline_image_24"
-        android:visible="true"/>
+        android:visible="true" />
     <item
         android:id="@+id/room_menu_view_preset"
         android:title="Видимость пресетов"

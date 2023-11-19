@@ -38,8 +38,8 @@ public class ScanActivity extends AppCompatActivity {
 
     // генерируем данные для адаптера
     public void fillData() {
-        for (int i = 1; i <= 30; i++) {                                             //    ТУТ ПОТОМ ПОМЕНЯТЬ !!!
-            String url = "http://192.168.1" + "." + i + "/xml";
+        for (int i = 1; i <= 254; i++) {
+            String url = "http://" + getRouterIPAddress() + "." + i + "/xml";
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -63,7 +63,7 @@ public class ScanActivity extends AppCompatActivity {
                         String dev_now = responseData.substring(responseData.indexOf("<Now>") + 5, responseData.indexOf("</Now>"));
                         String dev_max = responseData.substring(responseData.indexOf("<Max>") + 5, responseData.indexOf("</Max>"));
 
-                        scan_devices.add(new Device_state(dev_ip, dev_name, dev_hostname, dev_now, dev_max, "false"));
+                        scan_devices.add(new Device_state(dev_ip, dev_name, dev_hostname, dev_now, dev_max, "false", "main", "true", "#6750A4", "false"));
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

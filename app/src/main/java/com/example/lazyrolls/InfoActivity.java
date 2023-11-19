@@ -41,7 +41,8 @@ public class InfoActivity extends AppCompatActivity {
                 "Посмотреть в Play Store",
                 "Посмотреть на Github",
                 "Пожертвовать разработчику приложения",
-                "Политика конфидециальности"};
+                "Сведения о конфидециальности",
+                "Связь с разработчиками"};
         String[] descArr = {
                 "Моторизированный привод для рулонных штор.",
                 "Управление приводами на прошивке LazyRolls",
@@ -49,7 +50,8 @@ public class InfoActivity extends AppCompatActivity {
                 "Спасибо за ваши оценки и отзывы",
                 "Да, всё верно: это приложение с открытым исходным кодом",
                 "Выразите свою признательность, это способствует развитию проекта",
-                "Нет, я не краду ваши данные" };
+                "Нет, я не краду ваши данные",
+                "t.me/lazyrolls"};
         int[] iconArr = {
                 R.drawable.lazy,
                 R.drawable.app_lazyrolls_2,
@@ -57,7 +59,8 @@ public class InfoActivity extends AppCompatActivity {
                 R.drawable.playstore,
                 R.drawable.github,
                 R.drawable.gift_box,
-                R.drawable.police };
+                R.drawable.police,
+                R.drawable.telegram};
 
         ArrayList<Map<String,Object>> itemDataList = new ArrayList<Map<String,Object>>();;
 
@@ -105,7 +108,7 @@ public class InfoActivity extends AppCompatActivity {
                 } else if(itemTitle == "Пожертвовать разработчику приложения") {
                     Intent launchBrowser = new Intent(Intent.ACTION_VIEW, Uri.parse("https://yoomoney.ru/fundraise/b8GYBARCVRE.230309"));
                     startActivity(launchBrowser);
-                } else if(itemTitle == "Политика конфидециальности") {
+                } else if(itemTitle == "Сведения о конфидециальности") {
                     androidx.appcompat.app.AlertDialog.Builder builder = new AlertDialog.Builder(InfoActivity.this);
                     builder.setTitle("Приложение LazyRolls");
                     builder.setMessage("Не собирает какие-либо личные или неперсонифицированные данные.\n" +
@@ -117,19 +120,13 @@ public class InfoActivity extends AppCompatActivity {
                         }
                     });
                     builder.show();
+                } else if(itemTitle == "Связь с разработчиками") {
+                    Intent launchBrowser = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/lazyrolls"));
+                    startActivity(launchBrowser);
                 }
             }
         });
 
     }
-
-
-
-
-
-
-
-
-
 
 }
