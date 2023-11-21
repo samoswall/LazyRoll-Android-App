@@ -125,6 +125,8 @@ public class InfoActivity extends AppCompatActivity {
                 } else if(itemTitle == "Связь с разработчиками") {
                     Intent launchBrowser = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/lazyrolls"));
                     startActivity(launchBrowser);
+                } else if(itemTitle == "Посмотреть в Play Store") {
+                    Toast.makeText(InfoActivity.this, "Пока не готово.", Toast.LENGTH_SHORT).show();
                 }
             }
         });

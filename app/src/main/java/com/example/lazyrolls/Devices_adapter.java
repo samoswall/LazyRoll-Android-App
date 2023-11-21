@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -50,13 +52,15 @@ public class Devices_adapter extends RecyclerView.Adapter<Devices_adapter.ViewHo
     private List<Device_state> dData;
     private List<XML_answer> xData;
     private LayoutInflater dInflater;
+    private int[] xDev_offline;
     private Devices_adapter.ItemClickListener dClickListener;
 
 
-    Devices_adapter(Context context, List<Device_state> data, List<XML_answer> xdata) {
+    Devices_adapter(Context context, List<Device_state> data, List<XML_answer> xdata, int[] Dev_offline) {
         this.dInflater = LayoutInflater.from(context);
         this.dData = data;
         this.xData = xdata;
+        this.xDev_offline = Dev_offline;
     }
 
     @Override
@@ -78,18 +82,49 @@ public class Devices_adapter extends RecyclerView.Adapter<Devices_adapter.ViewHo
         String dev_name = dData.get(positions).Name;
         String dev_now = dData.get(positions).Now;
         String dev_max = dData.get(positions).Max;
+
+        if (xDev_offline[positions] > 1) {
+            holder.dev_offline.setText("Устройство в сети");
+            holder.dev_offline.setTextColor(Color.parseColor("#078700")); //green
+        } else {
+            holder.dev_offline.setText("Устройство не в сети");
+            holder.dev_offline.setTextColor(Color.parseColor("#870000")); //red
+        }
+
         if (Integer.parseInt(dev_now) > Integer.parseInt(dev_max)) dev_now = dev_max;               // не настроенный девайс
+
         if (Boolean.parseBoolean(dData.get(positions).Invert_percent)) {
             percent = ((Integer.parseInt(dev_now) * 100) / Integer.parseInt(dev_max));
         } else {
             percent = 100 - ((Integer.parseInt(dev_now) * 100) / Integer.parseInt(dev_max));
         }
-        holder.dev_percent_text.setText(String.valueOf(percent)+"%");
-        ViewGroup.LayoutParams params = (ViewGroup.LayoutParams) holder.blind.getLayoutParams();
-        params.height = convertDpToPixels(this.dInflater.getContext(), 150) * percent / 100;               //262pix или 150dp
-        holder.blind.setLayoutParams(params);
 
-        holder.blind.setBackgroundColor(Color.parseColor(dData.get(positions).Color_curtain));
+        holder.dev_percent_text.setText(String.valueOf(percent)+"%");
+
+        ViewGroup.LayoutParams params_left = (ViewGroup.LayoutParams) holder.blind_left.getLayoutParams();
+        holder.blind_left.setLayoutParams(params_left);
+        holder.blind_left.setBackgroundColor(Color.parseColor(dData.get(positions).Color_curtain));
+        ViewGroup.LayoutParams params_right = (ViewGroup.LayoutParams) holder.blind_right.getLayoutParams();
+        holder.blind_right.setLayoutParams(params_right);
+        holder.blind_right.setBackgroundColor(Color.parseColor(dData.get(positions).Color_curtain));
+
+        if (dData.get(positions).Direction.equals("up")) {                                                               // направление движения
+            holder.blind_left.setVisibility(View.VISIBLE);
+            holder.blind_right.setVisibility(View.GONE);
+            params_left.height = convertDpToPixels(this.dInflater.getContext(), 150) * percent / 100;   //262pix или 150dp
+            params_left.width = convertDpToPixels(this.dInflater.getContext(), 151);
+        } else if (dData.get(positions).Direction.equals("left")) {
+            holder.blind_left.setVisibility(View.VISIBLE);
+            holder.blind_right.setVisibility(View.GONE);
+            params_left.width = convertDpToPixels(this.dInflater.getContext(), 151) * percent / 100;
+            params_left.height = convertDpToPixels(this.dInflater.getContext(), 150);
+        } else if (dData.get(positions).Direction.equals("right")) {
+            holder.blind_left.setVisibility(View.GONE);
+            holder.blind_right.setVisibility(View.VISIBLE);
+            params_right.width = convertDpToPixels(this.dInflater.getContext(), 151) * percent / 100;
+            params_right.height = convertDpToPixels(this.dInflater.getContext(), 150);
+        }
+
         holder.dev_name_text.setText(dev_name);
         if (Boolean.parseBoolean(dData.get(positions).Preset_view)) {
             holder.dev_preset_button_1.setVisibility(View.VISIBLE);                                     //Показать пресеты из конфига
@@ -134,7 +169,7 @@ public class Devices_adapter extends RecyclerView.Adapter<Devices_adapter.ViewHo
                                     notifyDataSetChanged();
                                 }
                             });
-                            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.cancel();
@@ -175,23 +210,11 @@ public class Devices_adapter extends RecyclerView.Adapter<Devices_adapter.ViewHo
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int itemIndex) {
                                     //    Toast.makeText(MainActivity.this, "You choose item " + listItemArr[itemIndex], Toast.LENGTH_LONG).show();
-
                                 }
                             });
                             builder.setCancelable(true);
                             builder.create();
                             builder.show();
-
-
-
-
-
-
-
-
-
-
-
                         } else if (menuItem.getItemId() == R.id.device_page) {                      // Перейти на страницу устройсва
                             Intent launchBrowser = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + xData.get(positions).IP));
                             dInflater.getContext().startActivity(launchBrowser);
@@ -216,7 +239,8 @@ public class Devices_adapter extends RecyclerView.Adapter<Devices_adapter.ViewHo
                                 @Override
                                 public void onOk(AmbilWarnaDialog dialog, int color) {
                                     dData.get(positions).Color_curtain = "#"+Integer.toHexString(color);
-                                    holder.blind.setBackgroundColor(Color.parseColor(dData.get(positions).Color_curtain));
+                                    holder.blind_left.setBackgroundColor(Color.parseColor(dData.get(positions).Color_curtain));
+                                    holder.blind_right.setBackgroundColor(Color.parseColor(dData.get(positions).Color_curtain));
                                 }
                                 @Override
                                 public void onCancel(AmbilWarnaDialog dialog) {
@@ -232,7 +256,51 @@ public class Devices_adapter extends RecyclerView.Adapter<Devices_adapter.ViewHo
                             }
                         } else if (menuItem.getItemId() == R.id.device_add_slave) {                           // Добавить ведомый
                             Toast.makeText(v.getContext(), "Функция в разработке.", Toast.LENGTH_SHORT).show();
-                            }
+                        } else if (menuItem.getItemId() == R.id.device_direction) {                     // Направление движения
+
+                            int Dir_sel = -1;
+                            final String[] directArray = {"Открывается вверх", "Открывается влево", "Открывается вправо"};
+                            Context context = v.getContext();
+                            androidx.appcompat.app.AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                            builder.setIcon(R.mipmap.ic_launcher);
+                            int checkedItem = 0; // Up
+                            final Set<String> selectedItems = new HashSet<String>();
+                            selectedItems.add(directArray[checkedItem]);
+
+                            builder.setTitle("Выберите направление движения шторы");
+
+                            builder.setSingleChoiceItems(directArray, checkedItem, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // Do Something...
+                                    selectedItems.clear();
+                                    selectedItems.add(directArray[which]);
+                                }
+                            });
+                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    if(selectedItems.isEmpty()) {
+                                        return;
+                                    }
+                                    String direct = selectedItems.iterator().next();
+
+                                    if (direct.equals("Открывается вверх")) {
+                                        dData.get(positions).Direction = "up";
+                                    } else if (direct.equals("Открывается влево")) {
+                                        dData.get(positions).Direction = "left";
+                                    } else if (direct.equals("Открывается вправо")) {
+                                        dData.get(positions).Direction = "right";
+                                    }
+                                    dialog.dismiss();
+                                }
+                            });
+                           builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                           });
+                           builder.show();
+                        }
                         return true;
                     }
                 });
@@ -299,7 +367,9 @@ public class Devices_adapter extends RecyclerView.Adapter<Devices_adapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView dev_name_text;
         TextView dev_percent_text;
-        View blind;
+        TextView dev_offline;
+        View blind_left;
+        View blind_right;
         ImageButton dev_menu_button;
         ImageButton dev_open_button;
         ImageButton dev_stop_button;
@@ -315,7 +385,9 @@ public class Devices_adapter extends RecyclerView.Adapter<Devices_adapter.ViewHo
             itemView.setOnClickListener(this);
             dev_menu_button = itemView.findViewById(R.id.dev_menu_button);
             dev_percent_text = itemView.findViewById(R.id.text_percent);
-            blind = itemView.findViewById(R.id.blind);
+            dev_offline = itemView.findViewById(R.id.device_online);
+            blind_left = itemView.findViewById(R.id.blind_left);
+            blind_right = itemView.findViewById(R.id.blind_right);
             dev_open_button = itemView.findViewById(R.id.dev_imageButton_up);
             dev_stop_button = itemView.findViewById(R.id.dev_imageButton_stop);
             dev_close_button = itemView.findViewById(R.id.dev_imageButton_down);

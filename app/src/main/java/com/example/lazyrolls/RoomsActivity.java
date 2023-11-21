@@ -51,6 +51,7 @@ public class RoomsActivity extends AppCompatActivity {
     ArrayList<Device_state> ScanDevices = new ArrayList<>();
     int room_position;
     Timer request_timer = new Timer();
+    int [] dev_offline = new int[20]; // счетчик устройств - 3 периода таймера нет ответа - значит offline
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +62,7 @@ public class RoomsActivity extends AppCompatActivity {
         Devices_temp = new ArrayList<>();
         ScanDevices = new ArrayList<>();
         Devices_state = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 20; i++) {
             Devices_state.add(new XML_answer("<?xml version='1.0'?><Curtain><Info><Version>0.14</Version><IP>192.168.1.30</IP><Name>Штора тест</Name><Hostname>lazyroll.test</Hostname><Time>01:21:01 [Сб]</Time><UpTime>0d 05:13</UpTime><RSSI>-66 дБм</RSSI><MQTT>Выключен</MQTT><Log>4</Log></Info><ChipInfo><ID>547dc8</ID><FlashID>1640ef</FlashID><RealSize>4 МБ</RealSize><IdeSize>4 МБ</IdeSize><Speed>40МГц</Speed><IdeMode>DOUT</IdeMode></ChipInfo><RF><LastCode>0</LastCode><Hex>0</Hex></RF><Position><Now>0</Now><Dest>0</Dest><Max>11300</Max><End1>вкл</End1></Position><LED><Mode>Выключен</Mode><Level>Низкая</Level></LED></Curtain>"));
              // Временное решение, иначе ошибка записи во 2ю строку, если первой нет
         }
@@ -83,8 +84,10 @@ public class RoomsActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.linear_devices);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new Devices_adapter(this, Devices, Devices_state);
+        adapter = new Devices_adapter(this, Devices, Devices_state, dev_offline);
         recyclerView.setAdapter(adapter);
+
+
     }
 
 
@@ -97,15 +100,16 @@ public class RoomsActivity extends AppCompatActivity {
                 //Вызов каждые 2 секунды
                 for (int i = 0; i < Devices.size(); i++) {
                     xmlASyncGet(Devices.get(i).Ip, i);
+                    if (dev_offline[i] > 0) {dev_offline[i] -= 1;}
                 }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();                                                 // Обновление адаптера
+                    }
+                });
             }
         }, 1000, 2000);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                                                                       // чтото обновить
-            }
-        });
     }
 
     @Override
@@ -133,7 +137,9 @@ public class RoomsActivity extends AppCompatActivity {
                         ScanDevices  = (ArrayList<Device_state>) data.getSerializableExtra("keyScan");
                         for (int i=0; i<ScanDevices.size(); i++) {
                             Devices.add(ScanDevices.get(i));
+
                         }
+
                     }
                 }
             });
@@ -168,9 +174,6 @@ public class RoomsActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    public void Update_view(){
-        adapter.notifyDataSetChanged();
-    }
 
 
     public void xmlASyncGet(String url, int line_dev) {
@@ -194,22 +197,15 @@ public class RoomsActivity extends AppCompatActivity {
                     if (responseData.indexOf("Curtain") > 1) {
                         Devices_state.set(line_dev, new XML_answer(responseData));
                         Devices.get(line_dev).Now = Devices_state.get(line_dev).Now;
+                        dev_offline[line_dev] = 3;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                adapter.notifyDataSetChanged();
-                                //    boxAdapter.notifyDataSetChanged();
+                       //         adapter.notifyDataSetChanged();
                             }
                         });
                     }
                 }
             }).start();
     }
-
-
-
-
-
-
-
 }

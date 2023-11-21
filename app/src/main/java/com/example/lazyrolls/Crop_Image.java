@@ -82,7 +82,8 @@ public class Crop_Image extends AppCompatActivity {
         if (result.isSuccessful()) {
             Bitmap cropped = BitmapFactory.decodeFile(result.getUriFilePath(getApplicationContext(), true));
             saveCroppedImage(cropped,img_pos);
-   //         Room_image_load(1);
+        } else {
+            finish();
         }
     });
 
@@ -169,7 +170,6 @@ public class Crop_Image extends AppCompatActivity {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
             outputStream.flush();
             outputStream.close();
-Log.i("---save---", myDir.toString()+"   "+file.toString());
             Intent intent = new Intent();
             intent.putExtra("image_file_name", img_pos);
             setResult(RESULT_OK, intent);

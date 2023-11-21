@@ -18,6 +18,5 @@
         android:layout_width="230dp"
         android:layout_height="wrap_content"
         android:textSize="14sp"
-        tools:text="ABC"
-        android:text="TextView" />
+        tools:text="ABC" />
 </LinearLayout>

@@ -21,6 +21,10 @@
         android:title="Инвертировать положение"
         android:icon="@drawable/baseline_percent_24"/>
     <item
+        android:id="@+id/device_direction"
+        android:title="Направление движения"
+        android:icon="@drawable/baseline_open_with_24"/>
+    <item
         android:id="@+id/device_add_slave"
         android:title="Добавить ведомый"
         android:icon="@drawable/baseline_add_24"/>

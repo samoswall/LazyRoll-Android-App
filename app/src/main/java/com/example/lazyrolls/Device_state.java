@@ -13,8 +13,9 @@ public class Device_state implements Serializable {
      String Invert_percent;
      String Color_curtain;
      String Preset_view;
+     String Direction;
 
-     Device_state(String ip, String name, String hostname, String now, String max, String check_box, String role, String invert_percent, String color_curtain, String preset_view) {
+     Device_state(String ip, String name, String hostname, String now, String max, String check_box, String role, String invert_percent, String color_curtain, String preset_view, String direction) {
         Name = name;
         Hostname = hostname;
         Ip = ip;
@@ -25,6 +26,7 @@ public class Device_state implements Serializable {
         Invert_percent = invert_percent;
         Color_curtain = color_curtain;
         Preset_view = preset_view;
+        Direction = direction;
     }
 
     public String getIp() {
@@ -105,5 +107,13 @@ public class Device_state implements Serializable {
 
     public void setPreset_view(String preset_view) {
         this.Preset_view = preset_view;
+    }
+
+    public String getDirection() {
+        return Direction;
+    }
+
+    public void setDirection(String direction) {
+        this.Direction = direction;
     }
 }

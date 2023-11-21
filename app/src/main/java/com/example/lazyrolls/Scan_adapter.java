@@ -87,7 +87,10 @@ public class Scan_adapter extends BaseAdapter{
     OnCheckedChangeListener myCheckChangeList = new OnCheckedChangeListener() {
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             // меняем данные товара (в корзине или нет)
-            getProduct((Integer) buttonView.getTag()).Check_box = "true";  //isChecked
+            if (isChecked) {
+                getProduct((Integer) buttonView.getTag()).Check_box = "true";
+            } else {getProduct((Integer) buttonView.getTag()).Check_box = "false";
+            }
         }
     };
 

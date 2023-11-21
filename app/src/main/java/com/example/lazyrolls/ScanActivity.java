@@ -63,7 +63,8 @@ public class ScanActivity extends AppCompatActivity {
                         String dev_now = responseData.substring(responseData.indexOf("<Now>") + 5, responseData.indexOf("</Now>"));
                         String dev_max = responseData.substring(responseData.indexOf("<Max>") + 5, responseData.indexOf("</Max>"));
                         if (dev_name.length() == 0) dev_name = dev_hostname;
-                        scan_devices.add(new Device_state(dev_ip, dev_name, dev_hostname, dev_now, dev_max, "false", "main", "true", "#6750A4", "false"));
+                        scan_devices.add(new Device_state(dev_ip, dev_name, dev_hostname, dev_now, dev_max,
+                                "false", "main", "true", "#6750A4", "false", "up"));
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

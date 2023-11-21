@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        android:text="Devices Offline"
+        android:text="Устройство не в сети"
         app:layout_constraintStart_toEndOf="@+id/image_device"
         app:layout_constraintTop_toBottomOf="@+id/device_name" />
 
@@ -98,10 +98,10 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
-        android:id="@+id/blind"
+        android:id="@+id/blind_left"
         android:layout_width="151dp"
         android:layout_height="150dp"
-        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
         android:layout_marginTop="8dp"
         android:background="#FF6750A4"
         android:minHeight="1dp"
@@ -110,6 +110,20 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints"
         tools:visibility="visible" />
+
+    <View
+        android:id="@+id/blind_right"
+        android:layout_width="151dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="245dp"
+        android:background="#FF6750A4"
+        android:minHeight="1dp"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints"
+        tools:visibility="gone" />
 
     <ImageButton
         android:id="@+id/device_preset_1"
