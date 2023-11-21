@@ -92,6 +92,7 @@ public class InfoActivity extends AppCompatActivity {
                 } else if (itemTitle == "Приложение LazyRolls") {
                     androidx.appcompat.app.AlertDialog.Builder builder = new AlertDialog.Builder(InfoActivity.this);
                     builder.setTitle("О приложении LazyRolls");
+                    builder.setIcon(R.mipmap.ic_launcher);
                     builder.setMessage("Приложение было создано в порыве изучить принципы создания приложений для мобильных устройств и попутно принести пользу сообществу LazyRolls.\n" +
                                        "Поэтому приложение предоставляется - как есть!\n" +
                                        "Поддержка приложения будет осуществляться по мере возможностей.");
@@ -111,6 +112,7 @@ public class InfoActivity extends AppCompatActivity {
                 } else if(itemTitle == "Сведения о конфидециальности") {
                     androidx.appcompat.app.AlertDialog.Builder builder = new AlertDialog.Builder(InfoActivity.this);
                     builder.setTitle("Приложение LazyRolls");
+                    builder.setIcon(R.mipmap.ic_launcher);
                     builder.setMessage("Не собирает какие-либо личные или неперсонифицированные данные.\n" +
                                        "Разработчику не отправляется никакая информация.");
                     builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {

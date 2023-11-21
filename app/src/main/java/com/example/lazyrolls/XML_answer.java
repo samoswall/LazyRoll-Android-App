@@ -29,8 +29,8 @@ public class XML_answer {
             IdeMode = xml_answer.substring(xml_answer.indexOf("<IdeMode>") + 9, xml_answer.indexOf("</IdeMode>"));
             //RF
             if (xml_answer.indexOf("<LastCode>") < 1) {
-                LastCode = "Не поддерживается этой версией прошивки";
-                Hex = "Не поддерживается этой версией прошивки";
+                LastCode = "-";
+                Hex = "-";
             } else {
                 LastCode = xml_answer.substring(xml_answer.indexOf("<LastCode>") + 10, xml_answer.indexOf("</LastCode>"));
                 Hex = xml_answer.substring(xml_answer.indexOf("<Hex>") + 5, xml_answer.indexOf("</Hex>"));

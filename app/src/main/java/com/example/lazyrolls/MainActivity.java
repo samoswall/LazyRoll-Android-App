@@ -5,6 +5,8 @@ import static java.util.Arrays.*;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Menu;
@@ -12,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -23,6 +26,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new Rooms_adapter(this, DeviceinRoom);
+        adapter = new Rooms_adapter(this, MainActivity.this, DeviceinRoom);
         adapter.setClickListener(this::onItemClick);
         recyclerView.setAdapter(adapter);
 
@@ -112,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
             Context context = this;
             androidx.appcompat.app.AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("Тут пока ничего нет!\nВ планах:");
+            builder.setIcon(R.mipmap.ic_launcher);
             builder.setMessage("Выбор цветовой темы\nМожет быть внешний MQTT");
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
@@ -228,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
 Log.i("--otroom--", String.valueOf(t_pos));
                 Gson gson = new Gson();
                 String json = gson.toJson(Devices);
-                Log.i("---otroom-json---", json);
+Log.i("---otroom-json---", json);
 
 
 
@@ -238,6 +244,41 @@ Log.i("--otroom--", String.valueOf(t_pos));
             }
         }
     });
+
+
+    // Запуск ожидания ответа от Crop_Image
+    ActivityResultLauncher<Intent> launchCropActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent data = result.getData();
+                // Получаем от Crop_Image
+                int file_img_pos = data.getIntExtra("image_file_name", -1);
+                Log.i("--otcrop--", String.valueOf(file_img_pos));
+
+                DeviceinRoom.get(file_img_pos).PictureRoom = "true";
+                adapter.notifyDataSetChanged();
+            }
+        }
+    });
+/*
+    private void Room_image_load (int pos) {
+        try {
+
+            File myDir = new File(MainActivity.this.getFilesDir(), "RoomsImg");
+            String imageName = "Image_room_" + String.valueOf(pos) + ".jpg";
+            File file = new File(myDir, imageName);
+            if (file.exists()) {
+                Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                ImageView myImage = (ImageView) findViewById(R.id.imageView2);
+                myImage.setImageBitmap(myBitmap);
+            }
+        }
+        catch(Exception e){
+        }
+    }
+*/
+
 
     //переход на RoomsActivity
     public void openRoomsActivity(int position) {

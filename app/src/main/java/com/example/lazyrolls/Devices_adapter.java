@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +33,10 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -69,13 +73,13 @@ public class Devices_adapter extends RecyclerView.Adapter<Devices_adapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(Devices_adapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(Devices_adapter.ViewHolder holder, int positions) {
         int percent;
-        String dev_name = dData.get(position).Name;
-        String dev_now = dData.get(position).Now;
-        String dev_max = dData.get(position).Max;
+        String dev_name = dData.get(positions).Name;
+        String dev_now = dData.get(positions).Now;
+        String dev_max = dData.get(positions).Max;
         if (Integer.parseInt(dev_now) > Integer.parseInt(dev_max)) dev_now = dev_max;               // не настроенный девайс
-        if (Boolean.parseBoolean(dData.get(position).Invert_percent)) {
+        if (Boolean.parseBoolean(dData.get(positions).Invert_percent)) {
             percent = ((Integer.parseInt(dev_now) * 100) / Integer.parseInt(dev_max));
         } else {
             percent = 100 - ((Integer.parseInt(dev_now) * 100) / Integer.parseInt(dev_max));
@@ -85,9 +89,9 @@ public class Devices_adapter extends RecyclerView.Adapter<Devices_adapter.ViewHo
         params.height = convertDpToPixels(this.dInflater.getContext(), 150) * percent / 100;               //262pix или 150dp
         holder.blind.setLayoutParams(params);
 
-        holder.blind.setBackgroundColor(Color.parseColor(dData.get(position).Color_curtain));
+        holder.blind.setBackgroundColor(Color.parseColor(dData.get(positions).Color_curtain));
         holder.dev_name_text.setText(dev_name);
-        if (Boolean.parseBoolean(dData.get(position).Preset_view)) {
+        if (Boolean.parseBoolean(dData.get(positions).Preset_view)) {
             holder.dev_preset_button_1.setVisibility(View.VISIBLE);                                     //Показать пресеты из конфига
             holder.dev_preset_button_2.setVisibility(View.VISIBLE);
             holder.dev_preset_button_3.setVisibility(View.VISIBLE);
@@ -122,10 +126,11 @@ public class Devices_adapter extends RecyclerView.Adapter<Devices_adapter.ViewHo
                             Context context = v.getContext();
                             AlertDialog.Builder builder = new AlertDialog.Builder(context);
                             builder.setTitle("Вы действительно хотите удалить устройство?");
+                            builder.setIcon(R.mipmap.ic_launcher);
                             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    dData.remove(position);
+                                    dData.remove(positions);
                                     notifyDataSetChanged();
                                 }
                             });
@@ -139,64 +144,79 @@ public class Devices_adapter extends RecyclerView.Adapter<Devices_adapter.ViewHo
                         } else if (menuItem.getItemId() == R.id.device_info) {                      // Инфо девайса
                             Context context = v.getContext();
                             androidx.appcompat.app.AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                            builder.setTitle(dData.get(position).Name);
-
-                            builder.setMessage(
-                                    "Версия: "+xData.get(position).Version+"\n" +
-                                    "IP: "+xData.get(position).IP+"\n" +
-                                    "Имя: "+xData.get(position).Name+"\n" +
-                                    "Имя в сети: "+xData.get(position).Hostname+"\n" +
-                                    "Время: "+xData.get(position).Time+"\n" +
-                                    "Время работы: "+xData.get(position).UpTime+"\n" +
-                                    "Мощность WiFi сигнала: "+xData.get(position).RSSI+"\n" +
-                                    "Статус MQTT: "+xData.get(position).MQTT+"\n" +
-                                    "Записей логирования: "+xData.get(position).Log+"\n" +
-                                    "ID ESP: "+xData.get(position).ID+"\n" +
-                                    "ID Flash: "+xData.get(position).FlashID+"\n" +
-                                    "Объем памяти: "+xData.get(position).RealSize+"\n" +
-                                    "Размер прошивки: "+xData.get(position).IdeSize+"\n" +
-                                    "Частота CPU: "+xData.get(position).Speed+"\n" +
-                                    "Режим прошивки: "+xData.get(position).IdeMode+"\n" +
-                                    "Последний код RF: "+xData.get(position).LastCode+"\n" +
-                                    "Код RF: "+xData.get(position).Hex+"\n" +
-                                    "Текущее положение: "+xData.get(position).Now+"\n" +
-                                    "Целевое положение: "+xData.get(position).Dest+"\n" +
-                                    "Максимальное: "+xData.get(position).Max+"\n" +
-                                    "Дополнительный концевик: "+xData.get(position).End1+"\n" +
-                                    "Режим светодиода: "+xData.get(position).Mode+"\n" +
-                                    "Яркость светодиода: "+xData.get(position).Level);
-                            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            builder.setTitle(dData.get(positions).Name);
+                            builder.setIcon(R.mipmap.ic_launcher);
+                            String[] listIdArr = {"Версия:", "IP:", "Имя:", "Имя в сети:", "Время:", "Время работы:", "Мощность WiFi:", "Статус MQTT:",
+                                    "Записей логирования:", "ID ESP:", "ID Flash:", "Объем памяти:", "Размер прошивки:", "Частота CPU:", "Режим прошивки:",
+                                    "Последний код RF:", "Код RF:", "Текущее положение:", "Целевое положение:", "Максимальное:", "Доп. концевик:",
+                                    "Режим светодиода:", "Яркость светодиода:"};
+                            String[] listItemArr = {xData.get(positions).Version, xData.get(positions).IP, xData.get(positions).Name, xData.get(positions).Hostname,
+                                    xData.get(positions).Time, xData.get(positions).UpTime, xData.get(positions).RSSI, xData.get(positions).MQTT,
+                                    xData.get(positions).Log,  xData.get(positions).ID, xData.get(positions).FlashID, xData.get(positions).RealSize,
+                                    xData.get(positions).IdeSize, xData.get(positions).Speed, xData.get(positions).IdeMode, xData.get(positions).LastCode,
+                                    xData.get(positions).Hex, xData.get(positions).Now, xData.get(positions).Dest, xData.get(positions).Max,
+                                    xData.get(positions).End1, xData.get(positions).Mode, xData.get(positions).Level};
+                            List<Map<String, Object>> dialogItemList = new ArrayList<Map<String, Object>>();
+                            int listItemLen = listItemArr.length;
+                            for(int i=0;i<listItemLen;i++)
+                            {
+                                Map<String, Object> itemMap = new HashMap<String, Object>();
+                                itemMap.put("ID", listIdArr[i]);
+                                itemMap.put("VALUE", listItemArr[i]);
+                                dialogItemList.add(itemMap);
+                            }
+                            // Create SimpleAdapter object.
+                            SimpleAdapter simpleAdapter = new SimpleAdapter(context, dialogItemList,
+                                    R.layout.info_lay_item,
+                                    new String[]{"ID", "VALUE"},
+                                    new int[]{R.id.info_name,R.id.info_value});
+                            // Set the data adapter.
+                            builder.setAdapter(simpleAdapter, new DialogInterface.OnClickListener() {
                                 @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.cancel();
+                                public void onClick(DialogInterface dialogInterface, int itemIndex) {
+                                    //    Toast.makeText(MainActivity.this, "You choose item " + listItemArr[itemIndex], Toast.LENGTH_LONG).show();
+
                                 }
                             });
+                            builder.setCancelable(true);
+                            builder.create();
                             builder.show();
+
+
+
+
+
+
+
+
+
+
+
                         } else if (menuItem.getItemId() == R.id.device_page) {                      // Перейти на страницу устройсва
-                            Intent launchBrowser = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + xData.get(position).IP));
+                            Intent launchBrowser = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + xData.get(positions).IP));
                             dInflater.getContext().startActivity(launchBrowser);
                         } else if (menuItem.getItemId() == R.id.device_preset_show) {               // Показать или скрыть кнопки пресетов
-                            if (Boolean.parseBoolean(dData.get(position).Preset_view)) {
+                            if (Boolean.parseBoolean(dData.get(positions).Preset_view)) {
                                 holder.dev_preset_button_1.setVisibility(View.GONE);
                                 holder.dev_preset_button_2.setVisibility(View.GONE);
                                 holder.dev_preset_button_3.setVisibility(View.GONE);
                                 holder.dev_preset_button_4.setVisibility(View.GONE);
                                 holder.dev_preset_button_5.setVisibility(View.GONE);
-                                dData.get(position).Preset_view = "false";
+                                dData.get(positions).Preset_view = "false";
                             } else {
                                 holder.dev_preset_button_1.setVisibility(View.VISIBLE);
                                 holder.dev_preset_button_2.setVisibility(View.VISIBLE);
                                 holder.dev_preset_button_3.setVisibility(View.VISIBLE);
                                 holder.dev_preset_button_4.setVisibility(View.VISIBLE);
                                 holder.dev_preset_button_5.setVisibility(View.VISIBLE);
-                                dData.get(position).Preset_view = "true";
+                                dData.get(positions).Preset_view = "true";
                             }
                         } else if (menuItem.getItemId() == R.id.device_color) {                     // Поменять цвет шторы   https://github.com/yukuku/ambilwarna
-                            AmbilWarnaDialog dialog = new AmbilWarnaDialog(dInflater.getContext(), Color.parseColor(dData.get(position).Color_curtain), new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                            AmbilWarnaDialog dialog = new AmbilWarnaDialog(dInflater.getContext(), Color.parseColor(dData.get(positions).Color_curtain), new AmbilWarnaDialog.OnAmbilWarnaListener() {
                                 @Override
                                 public void onOk(AmbilWarnaDialog dialog, int color) {
-                                    dData.get(position).Color_curtain = "#"+Integer.toHexString(color);
-                                    holder.blind.setBackgroundColor(Color.parseColor(dData.get(position).Color_curtain));
+                                    dData.get(positions).Color_curtain = "#"+Integer.toHexString(color);
+                                    holder.blind.setBackgroundColor(Color.parseColor(dData.get(positions).Color_curtain));
                                 }
                                 @Override
                                 public void onCancel(AmbilWarnaDialog dialog) {
@@ -205,12 +225,14 @@ public class Devices_adapter extends RecyclerView.Adapter<Devices_adapter.ViewHo
                             });
                             dialog.show();
                         } else if (menuItem.getItemId() == R.id.device_invert_percent) {                     // Инверсия %
-                            if (Boolean.parseBoolean(dData.get(position).Invert_percent)) {
-                                dData.get(position).Invert_percent = "false";
+                            if (Boolean.parseBoolean(dData.get(positions).Invert_percent)) {
+                                dData.get(positions).Invert_percent = "false";
                             } else {
-                                dData.get(position).Invert_percent = "true";
+                                dData.get(positions).Invert_percent = "true";
                             }
-                        }
+                        } else if (menuItem.getItemId() == R.id.device_add_slave) {                           // Добавить ведомый
+                            Toast.makeText(v.getContext(), "Функция в разработке.", Toast.LENGTH_SHORT).show();
+                            }
                         return true;
                     }
                 });
@@ -220,49 +242,49 @@ public class Devices_adapter extends RecyclerView.Adapter<Devices_adapter.ViewHo
         holder.dev_open_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Send_command(dData.get(position).Ip, "Open");
+                new Send_command(dData.get(positions).Ip, "Open");
             }
         });
         holder.dev_stop_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Send_command(dData.get(position).Ip, "Stop");
+                new Send_command(dData.get(positions).Ip, "Stop");
             }
         });
         holder.dev_close_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Send_command(dData.get(position).Ip, "Close");
+                new Send_command(dData.get(positions).Ip, "Close");
             }
         });
         holder.dev_preset_button_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Send_command(dData.get(position).Ip, "Preset1");
+                new Send_command(dData.get(positions).Ip, "Preset1");
             }
         });
         holder.dev_preset_button_2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Send_command(dData.get(position).Ip, "Preset2");
+                new Send_command(dData.get(positions).Ip, "Preset2");
             }
         });
         holder.dev_preset_button_3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Send_command(dData.get(position).Ip, "Preset3");
+                new Send_command(dData.get(positions).Ip, "Preset3");
             }
         });
         holder.dev_preset_button_4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Send_command(dData.get(position).Ip, "Preset4");
+                new Send_command(dData.get(positions).Ip, "Preset4");
             }
         });
         holder.dev_preset_button_5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Send_command(dData.get(position).Ip, "Preset5");
+                new Send_command(dData.get(positions).Ip, "Preset5");
             }
         });
         //   notifyDataSetChanged();

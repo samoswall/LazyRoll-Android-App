@@ -3,4 +3,5 @@
     <string name="add_room">Add room</string>
     <string name="rename_room">Rename room</string>
     <string name="delete_room">Delete room</string>
+    <string name="title_activity_crop_image">Crop_Image</string>
 </resources>

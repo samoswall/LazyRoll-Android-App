@@ -2,21 +2,25 @@ package com.example.lazyrolls;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -26,11 +30,14 @@ public class Rooms_adapter  extends RecyclerView.Adapter<Rooms_adapter.ViewHolde
     private List<Rooms> mData;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
-//    private LinearLayout linlayroom;
+    Context mContext;
+    MainActivity mIntent;
 
-    Rooms_adapter(Context context, List<Rooms> data) {
+    Rooms_adapter(Context context, MainActivity intent, List<Rooms> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
+        this.mContext = context;
+        this.mIntent = intent;
     }
 
     // inflates the row layout from xml when needed
@@ -52,6 +59,31 @@ public class Rooms_adapter  extends RecyclerView.Adapter<Rooms_adapter.ViewHolde
             holder.preset_button_3.setVisibility(View.VISIBLE);
             holder.preset_button_4.setVisibility(View.VISIBLE);
             holder.preset_button_5.setVisibility(View.VISIBLE);
+        }
+        if (!mData.get(position).PictureRoom.equals("@drawable/picroom")) {
+            try {
+                File myDir = new File(mIntent.getFilesDir(), "RoomsImg");
+                String imageName = "Image_room_" + String.valueOf(position) + ".jpg";
+                File file = new File(myDir, imageName);
+                if (file.exists()) {
+                    Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                    holder.room_image.setImageBitmap(myBitmap);
+               }
+           }
+           catch(Exception e){
+           }
+
+
+
+
+
+
+
+
+
+
+
+
         }
         holder.room_menu_button.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -80,6 +112,7 @@ public class Rooms_adapter  extends RecyclerView.Adapter<Rooms_adapter.ViewHolde
                             Context context = v.getContext();
                             AlertDialog.Builder builder = new AlertDialog.Builder(context);
                             builder.setTitle("Вы действительно хотите удалить комнату?");
+                            builder.setIcon(R.mipmap.ic_launcher);
                             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -98,6 +131,7 @@ public class Rooms_adapter  extends RecyclerView.Adapter<Rooms_adapter.ViewHolde
                             Context context = v.getContext();
                             AlertDialog.Builder builder = new AlertDialog.Builder(context);
                             builder.setTitle("Введите имя комнаты");
+                            builder.setIcon(R.mipmap.ic_launcher);
                             final EditText input_name_room = new EditText(context);
                             input_name_room.setInputType(InputType.TYPE_CLASS_TEXT);
                             builder.setView(input_name_room);
@@ -132,6 +166,11 @@ public class Rooms_adapter  extends RecyclerView.Adapter<Rooms_adapter.ViewHolde
                                 holder.preset_button_5.setVisibility(View.VISIBLE);
                                 mData.get(position).ShowPreset = "true";
                             }
+                        } else if (menuItem.getItemId() == R.id.room_menu_change_picture) {            // Изменить картинку комнаты
+                            //Запуск CropImage и передача номера комнаты
+                            Intent intent = new Intent( mIntent, Crop_Image.class);
+                            intent.putExtra("img_position", position);
+                            mIntent.launchCropActivity.launch(intent);
                         }
                         return true;
                     }
@@ -139,7 +178,70 @@ public class Rooms_adapter  extends RecyclerView.Adapter<Rooms_adapter.ViewHolde
                 popupMenu.show();
             }
         });
-
+        holder.room_open_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < mData.get(position).RoomDevices.size(); i++) {
+                    new Send_command(mData.get(position).RoomDevices.get(i).Ip, "Open");
+                }
+            }
+        });
+        holder.room_stop_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < mData.get(position).RoomDevices.size(); i++) {
+                    new Send_command(mData.get(position).RoomDevices.get(i).Ip, "Stop");
+                }
+            }
+        });
+        holder.room_close_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < mData.get(position).RoomDevices.size(); i++) {
+                    new Send_command(mData.get(position).RoomDevices.get(i).Ip, "Close");
+                }
+            }
+        });
+        holder.preset_button_1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < mData.get(position).RoomDevices.size(); i++) {
+                    new Send_command(mData.get(position).RoomDevices.get(i).Ip, "Preset1");
+                }
+            }
+        });
+        holder.preset_button_2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < mData.get(position).RoomDevices.size(); i++) {
+                    new Send_command(mData.get(position).RoomDevices.get(i).Ip, "Preset2");
+                }
+            }
+        });
+        holder.preset_button_3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < mData.get(position).RoomDevices.size(); i++) {
+                    new Send_command(mData.get(position).RoomDevices.get(i).Ip, "Preset3");
+                }
+            }
+        });
+        holder.preset_button_4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < mData.get(position).RoomDevices.size(); i++) {
+                    new Send_command(mData.get(position).RoomDevices.get(i).Ip, "Preset4");
+                }
+            }
+        });
+        holder.preset_button_5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < mData.get(position).RoomDevices.size(); i++) {
+                    new Send_command(mData.get(position).RoomDevices.get(i).Ip, "Preset5");
+                }
+            }
+        });
      //   notifyDataSetChanged();
     }
 
@@ -160,6 +262,11 @@ public class Rooms_adapter  extends RecyclerView.Adapter<Rooms_adapter.ViewHolde
         ImageButton preset_button_3;
         ImageButton preset_button_4;
         ImageButton preset_button_5;
+        ImageButton room_open_button;
+        ImageButton room_stop_button;
+        ImageButton room_close_button;
+        ImageView room_image;
+
         ViewHolder(View itemView) {
             super(itemView);
             room_name_text = itemView.findViewById(R.id.room_name);
@@ -170,7 +277,11 @@ public class Rooms_adapter  extends RecyclerView.Adapter<Rooms_adapter.ViewHolde
             preset_button_3 = itemView.findViewById(R.id.room_preset_3);
             preset_button_4 = itemView.findViewById(R.id.room_preset_4);
             preset_button_5 = itemView.findViewById(R.id.room_preset_5);
+            room_open_button = itemView.findViewById(R.id.room_imageButton_up);
+            room_stop_button = itemView.findViewById(R.id.room_imageButton_stop);
+            room_close_button = itemView.findViewById(R.id.room_imageButton_down);
             count_devices = itemView.findViewById(R.id.device_sum);
+            room_image = itemView.findViewById(R.id.image_room);
    //         itemView.setOnClickListener{};
         }
 
