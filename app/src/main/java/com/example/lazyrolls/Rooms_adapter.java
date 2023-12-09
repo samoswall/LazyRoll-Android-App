@@ -6,11 +6,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.InputType;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -60,6 +62,22 @@ public class Rooms_adapter  extends RecyclerView.Adapter<Rooms_adapter.ViewHolde
             holder.preset_button_4.setVisibility(View.VISIBLE);
             holder.preset_button_5.setVisibility(View.VISIBLE);
         }
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+        if (windowManager != null) {
+            windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+        }
+        int disp_height = displayMetrics.heightPixels;
+        int disp_width = displayMetrics.widthPixels;
+
+
+        ViewGroup.MarginLayoutParams params_img = (ViewGroup.MarginLayoutParams) holder.room_image.getLayoutParams();
+        params_img.width = (int) (disp_width*45/100);
+        params_img.leftMargin = (int) (disp_width*2/100);;
+        params_img.topMargin = (int) (disp_height*0.5/100);
+       // params_img.height = (int) (disp_height*20/100);
+
+
         if (!mData.get(position).PictureRoom.equals("@drawable/picroom")) {
             try {
                 File myDir = new File(mIntent.getFilesDir(), "RoomsImg");
@@ -72,18 +90,6 @@ public class Rooms_adapter  extends RecyclerView.Adapter<Rooms_adapter.ViewHolde
            }
            catch(Exception e){
            }
-
-
-
-
-
-
-
-
-
-
-
-
         }
         holder.room_menu_button.setOnClickListener(new View.OnClickListener(){
             @Override

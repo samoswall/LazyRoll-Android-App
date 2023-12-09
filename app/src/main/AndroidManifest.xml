@@ -29,7 +29,8 @@
             android:theme="@style/Theme.LazyRolls" />
         <activity
             android:name=".InfoActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.LazyRolls"/>
         <activity
             android:name=".RoomsActivity"
             android:exported="false" />

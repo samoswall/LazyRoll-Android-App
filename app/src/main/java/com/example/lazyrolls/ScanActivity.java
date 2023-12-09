@@ -5,6 +5,7 @@ import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +27,7 @@ public class ScanActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // создаем адаптер
         fillData();
@@ -34,6 +36,15 @@ public class ScanActivity extends AppCompatActivity {
         // настраиваем список
         ListView lvMain = (ListView) findViewById(R.id.scan_lvMain);
         lvMain.setAdapter(boxAdapter);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId ==  android.R.id.home) {
+            onBackPressed();
+        }
+        return true;
     }
 
     // генерируем данные для адаптера

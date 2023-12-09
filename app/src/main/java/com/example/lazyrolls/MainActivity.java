@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Menu;
@@ -28,6 +29,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,11 +65,19 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 public class MainActivity extends AppCompatActivity {
 
     ArrayList<Rooms> DeviceinRoom = new ArrayList<Rooms>();
     ArrayList<Device_state> Devices = new ArrayList<>();
     Rooms_adapter adapter;
+    int version = 1000;
+    String txt_version = "1.0.0";
+    String get_txt_version = "0.0.0";
+    boolean binUpdate = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         RecyclerView recyclerView = findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -87,11 +98,13 @@ public class MainActivity extends AppCompatActivity {
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
+        GetUpdate();
     }
 
 
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
+
         if (itemId == R.id.add_room) {
             Context context = this;
             androidx.appcompat.app.AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -129,6 +142,29 @@ public class MainActivity extends AppCompatActivity {
         } else if (itemId ==  R.id.info_room) {
             Intent intent = new Intent(MainActivity.this, InfoActivity.class);
             MainActivity.this.startActivity(intent);
+        } else if (itemId ==  R.id.update) {
+            Context context = this;
+            androidx.appcompat.app.AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Доступно обновление приложения");
+            builder.setIcon(R.mipmap.ic_launcher);
+            builder.setMessage("Текущая версия: " + txt_version + "\nДоступная версия: " + get_txt_version);
+            builder.setPositiveButton("Скачать", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent launchBrowser = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/samoswall/LazyRoll-Android-App"));
+                    startActivity(launchBrowser);
+                    dialog.cancel();
+                }
+            });
+            builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            builder.show();
+        } else if (itemId ==  android.R.id.home) {
+            onBackPressed();
         }
         return true;
     }
@@ -147,6 +183,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
+        MenuItem update_item = menu.findItem(R.id.update);
+        if (binUpdate) {
+            update_item.setVisible(true);
+        }
         if(menu.getClass().getSimpleName().equals("MenuBuilder")){      //добавление иконок в меню
             try{
                 Method m = menu.getClass().getDeclaredMethod ("setOptionalIconsVisible", Boolean.TYPE);
@@ -228,18 +268,6 @@ public class MainActivity extends AppCompatActivity {
                 Devices  = (ArrayList<Device_state>) data.getSerializableExtra("keyRoom");
                 int t_pos = data.getIntExtra("room_position", -1);
                 DeviceinRoom.get(t_pos).RoomDevices = Devices;
-
-
-
-Log.i("--otroom--", String.valueOf(t_pos));
-                Gson gson = new Gson();
-                String json = gson.toJson(Devices);
-Log.i("---otroom-json---", json);
-
-
-
-
-
                 adapter.notifyDataSetChanged();
             }
         }
@@ -289,6 +317,61 @@ Log.i("---otroom-json---", json);
         intent.putExtra("room_devices", DeviceinRoom.get(position).RoomDevices);
 
         launchRoomsActivity.launch(intent);
+    }
+
+
+    public void GetUpdate() {
+        String urlupdate = "https://raw.githubusercontent.com/samoswall/LazyRoll-Android-App/master/Versions";
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder()
+                        .url(urlupdate)
+                        .build();
+                Response response = null;
+                String responseData = "null";
+                try {
+                    response = client.newCall(request).execute();
+                    responseData = response.body().string();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                String finalResponseData = responseData;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        displayUpdate(finalResponseData);
+                    }
+                });
+            }
+        }).start();
+    }
+
+
+
+    void displayUpdate(String request_text) {
+        String[] lines;
+        String[] num_ver;
+        if (request_text.length()>4) {
+            try {
+                lines = request_text.split("\\r?\\n", -1);
+                num_ver = lines[0].split("\\.");
+                get_txt_version = lines[0];
+                int Getver = (10000 * Integer.valueOf(num_ver[0])) + (100 * Integer.valueOf(num_ver[1])) + Integer.valueOf(num_ver[2]);
+             //   text1.setText(String.valueOf(Getver));
+                if (Getver>version) {
+                    binUpdate = true;
+                    MainActivity.this.invalidateOptionsMenu();
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
     }
 
 

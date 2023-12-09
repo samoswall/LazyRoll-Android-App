@@ -5,6 +5,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -56,6 +57,7 @@ public class RoomsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rooms);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         DeviceinRoom = new ArrayList<Rooms>();
         Devices = new ArrayList<>();
@@ -86,6 +88,8 @@ public class RoomsActivity extends AppCompatActivity {
 
         adapter = new Devices_adapter(this, Devices, Devices_state, dev_offline);
         recyclerView.setAdapter(adapter);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(dividerItemDecoration);
 
 
     }
@@ -124,6 +128,8 @@ public class RoomsActivity extends AppCompatActivity {
         int itemId = item.getItemId();
         if (itemId == R.id.add_device) {
             openScanActivity();  // Запуск ScanActivity
+        } else if (itemId ==  android.R.id.home) {
+            onBackPressed();
         }
         return true;
     }

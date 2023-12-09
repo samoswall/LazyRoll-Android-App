@@ -13,13 +13,21 @@ public class XML_answer {
             //Info
             Version = xml_answer.substring(xml_answer.indexOf("<Version>") + 9, xml_answer.indexOf("</Version>"));
             IP = xml_answer.substring(xml_answer.indexOf("<IP>") + 4, xml_answer.indexOf("</IP>"));
-            Name = xml_answer.substring(xml_answer.indexOf("<Name>") + 6, xml_answer.indexOf("</Name>"));
+            if (xml_answer.indexOf("<Name>") < 1) {
+                Name = "Не поддерживается";
+            } else {
+                Name = xml_answer.substring(xml_answer.indexOf("<Name>") + 6, xml_answer.indexOf("</Name>"));
+            }
             Hostname = xml_answer.substring(xml_answer.indexOf("<Hostname>") + 10, xml_answer.indexOf("</Hostname>"));
             Time = xml_answer.substring(xml_answer.indexOf("<Time>") + 6, xml_answer.indexOf("</Time>"));
             UpTime = xml_answer.substring(xml_answer.indexOf("<UpTime>") + 8, xml_answer.indexOf("</UpTime>"));
             RSSI = xml_answer.substring(xml_answer.indexOf("<RSSI>") + 6, xml_answer.indexOf("</RSSI>"));
             MQTT = xml_answer.substring(xml_answer.indexOf("<MQTT>") + 6, xml_answer.indexOf("</MQTT>"));
-            Log = xml_answer.substring(xml_answer.indexOf("<Log>") + 5, xml_answer.indexOf("</Log>"));
+            if (xml_answer.indexOf("<Log>") < 1) {
+                Log = "Не поддерживается";
+            } else {
+                Log = xml_answer.substring(xml_answer.indexOf("<Log>") + 5, xml_answer.indexOf("</Log>"));
+            }
             //ChipInfo
             ID = xml_answer.substring(xml_answer.indexOf("<ID>") + 4, xml_answer.indexOf("</ID>"));
             FlashID = xml_answer.substring(xml_answer.indexOf("<FlashID>") + 9, xml_answer.indexOf("</FlashID>"));
@@ -29,8 +37,8 @@ public class XML_answer {
             IdeMode = xml_answer.substring(xml_answer.indexOf("<IdeMode>") + 9, xml_answer.indexOf("</IdeMode>"));
             //RF
             if (xml_answer.indexOf("<LastCode>") < 1) {
-                LastCode = "-";
-                Hex = "-";
+                LastCode = "Не поддерживается";
+                Hex = "Не поддерживается";
             } else {
                 LastCode = xml_answer.substring(xml_answer.indexOf("<LastCode>") + 10, xml_answer.indexOf("</LastCode>"));
                 Hex = xml_answer.substring(xml_answer.indexOf("<Hex>") + 5, xml_answer.indexOf("</Hex>"));

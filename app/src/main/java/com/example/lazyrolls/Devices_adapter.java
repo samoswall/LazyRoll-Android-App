@@ -2,6 +2,7 @@ package com.example.lazyrolls;
 
 import static androidx.core.content.ContextCompat.startActivity;
 
+import android.app.Activity;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,15 +10,18 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.text.InputType;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -53,6 +57,7 @@ public class Devices_adapter extends RecyclerView.Adapter<Devices_adapter.ViewHo
     private List<XML_answer> xData;
     private LayoutInflater dInflater;
     private int[] xDev_offline;
+    Context xcontext;
     private Devices_adapter.ItemClickListener dClickListener;
 
 
@@ -61,6 +66,7 @@ public class Devices_adapter extends RecyclerView.Adapter<Devices_adapter.ViewHo
         this.dData = data;
         this.xData = xdata;
         this.xDev_offline = Dev_offline;
+        this.xcontext = context;
     }
 
     @Override
@@ -92,8 +98,9 @@ public class Devices_adapter extends RecyclerView.Adapter<Devices_adapter.ViewHo
         }
 
         if (Integer.parseInt(dev_now) > Integer.parseInt(dev_max)) dev_now = dev_max;               // не настроенный девайс
+        if (Integer.parseInt(dev_now) < 0) dev_now = "0";                                           // отрицательные значения
 
-        if (Boolean.parseBoolean(dData.get(positions).Invert_percent)) {
+        if (Boolean.parseBoolean(dData.get(positions).Invert_percent)) {                            // инверсия
             percent = ((Integer.parseInt(dev_now) * 100) / Integer.parseInt(dev_max));
         } else {
             percent = 100 - ((Integer.parseInt(dev_now) * 100) / Integer.parseInt(dev_max));
@@ -101,30 +108,52 @@ public class Devices_adapter extends RecyclerView.Adapter<Devices_adapter.ViewHo
 
         holder.dev_percent_text.setText(String.valueOf(percent)+"%");
 
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager windowManager = (WindowManager) xcontext.getSystemService(Context.WINDOW_SERVICE);
+        if (windowManager != null) {
+            windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+        }
+        int disp_height = displayMetrics.heightPixels;
+        int disp_width = displayMetrics.widthPixels;
+
+
+        ViewGroup.MarginLayoutParams params_w = (ViewGroup.MarginLayoutParams) holder.image_window.getLayoutParams();
+        params_w.width = (int) (disp_width*40/100);
+        params_w.leftMargin = (int) (disp_width*2/100);;
+        params_w.topMargin = (int) (disp_height*0.5/100);
+        params_w.height = (int) (disp_height*20/100);
+
         ViewGroup.LayoutParams params_left = (ViewGroup.LayoutParams) holder.blind_left.getLayoutParams();
+        ViewGroup.MarginLayoutParams params_l = (ViewGroup.MarginLayoutParams) holder.blind_left.getLayoutParams();
         holder.blind_left.setLayoutParams(params_left);
         holder.blind_left.setBackgroundColor(Color.parseColor(dData.get(positions).Color_curtain));
         ViewGroup.LayoutParams params_right = (ViewGroup.LayoutParams) holder.blind_right.getLayoutParams();
+        ViewGroup.MarginLayoutParams params_r = (ViewGroup.MarginLayoutParams) holder.blind_right.getLayoutParams();
         holder.blind_right.setLayoutParams(params_right);
         holder.blind_right.setBackgroundColor(Color.parseColor(dData.get(positions).Color_curtain));
 
         if (dData.get(positions).Direction.equals("up")) {                                                               // направление движения
             holder.blind_left.setVisibility(View.VISIBLE);
             holder.blind_right.setVisibility(View.GONE);
-            params_left.height = convertDpToPixels(this.dInflater.getContext(), 150) * percent / 100;   //262pix или 150dp
-            params_left.width = convertDpToPixels(this.dInflater.getContext(), 151);
+            params_l.width = (int) ((disp_width*34.5/100)+(disp_width/100));
+            params_l.leftMargin = (int) (disp_width*4/100);
+            params_l.topMargin = (int) (disp_height*1.2/100);
+            params_l.height = (int) ((disp_height*17.5*percent/10000)+(disp_width/100));
         } else if (dData.get(positions).Direction.equals("left")) {
             holder.blind_left.setVisibility(View.VISIBLE);
             holder.blind_right.setVisibility(View.GONE);
-            params_left.width = convertDpToPixels(this.dInflater.getContext(), 151) * percent / 100;
-            params_left.height = convertDpToPixels(this.dInflater.getContext(), 150);
+            params_l.width = (int) ((disp_width*34.5*percent/10000)+(disp_width/100));
+            params_l.leftMargin = (int) (disp_width*4/100);
+            params_l.topMargin = (int) (disp_height*1.2/100);
+            params_l.height = (int) (disp_height*18/100);
         } else if (dData.get(positions).Direction.equals("right")) {
             holder.blind_left.setVisibility(View.GONE);
             holder.blind_right.setVisibility(View.VISIBLE);
-            params_right.width = convertDpToPixels(this.dInflater.getContext(), 151) * percent / 100;
-            params_right.height = convertDpToPixels(this.dInflater.getContext(), 150);
+            params_r.width = (int) ((disp_width*34.5*percent/10000)+(disp_width/100));
+            params_r.leftMargin = (int) ((disp_width*4/100)+(disp_width*34.5*(100-percent)/10000));
+            params_r.topMargin = (int) (disp_height*1.2/100);
+            params_r.height = (int) (disp_height*18/100);
         }
-
         holder.dev_name_text.setText(dev_name);
         if (Boolean.parseBoolean(dData.get(positions).Preset_view)) {
             holder.dev_preset_button_1.setVisibility(View.VISIBLE);                                     //Показать пресеты из конфига
@@ -166,7 +195,7 @@ public class Devices_adapter extends RecyclerView.Adapter<Devices_adapter.ViewHo
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dData.remove(positions);
-                                    notifyDataSetChanged();
+                                    //   notifyDataSetChanged();                                       Под вопросом для 7 андроид
                                 }
                             });
                             builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
@@ -379,6 +408,7 @@ public class Devices_adapter extends RecyclerView.Adapter<Devices_adapter.ViewHo
         ImageButton dev_preset_button_3;
         ImageButton dev_preset_button_4;
         ImageButton dev_preset_button_5;
+        ImageView image_window;
         ViewHolder(View itemView) {
             super(itemView);
             dev_name_text = itemView.findViewById(R.id.device_name);
@@ -396,6 +426,7 @@ public class Devices_adapter extends RecyclerView.Adapter<Devices_adapter.ViewHo
             dev_preset_button_3 = itemView.findViewById(R.id.device_preset_3);
             dev_preset_button_4 = itemView.findViewById(R.id.device_preset_4);
             dev_preset_button_5 = itemView.findViewById(R.id.device_preset_5);
+            image_window = itemView.findViewById(R.id.image_device);
         }
 
         @Override
@@ -419,6 +450,9 @@ public class Devices_adapter extends RecyclerView.Adapter<Devices_adapter.ViewHo
         void onItemClick(View view, int position);
     }
 
+    private static String colorToHexString(int color) {                     //проверка цвета
+        return String.format("#%06X", 0xFFFFFFFF & color);
+    }
 
 }
 

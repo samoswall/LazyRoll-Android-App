@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:text="Roll"
-        android:textSize="18dp"
+        android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/image_device"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,6 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:text="Устройство не в сети"
+        android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@+id/image_device"
         app:layout_constraintTop_toBottomOf="@+id/device_name" />
 
@@ -41,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="100%"
-        android:textSize="48sp"
+        android:textSize="80px"
         app:layout_constraintBottom_toTopOf="@+id/dev_imageButton_stop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/image_device"
@@ -52,8 +53,8 @@
         android:layout_width="58dp"
         android:layout_height="58dp"
         android:layout_marginStart="5dp"
-        android:layout_marginBottom="5dp"
-        android:background="@null"
+        android:layout_marginBottom="0dp"
+        android:background="@drawable/img_button"
         android:scaleType="fitXY"
         android:src="@drawable/baseline_arrow_circle_up_24"
         android:visibility="visible"
@@ -64,8 +65,8 @@
         android:id="@+id/dev_imageButton_stop"
         android:layout_width="58dp"
         android:layout_height="58dp"
-        android:layout_marginBottom="5dp"
-        android:background="@null"
+        android:layout_marginBottom="0dp"
+        android:background="@drawable/img_button"
         android:scaleType="fitXY"
         android:src="@drawable/baseline_stop_circle_24"
         android:visibility="visible"
@@ -78,8 +79,8 @@
         android:layout_width="58dp"
         android:layout_height="58dp"
         android:layout_marginEnd="5dp"
-        android:layout_marginBottom="5dp"
-        android:background="@null"
+        android:layout_marginBottom="0dp"
+        android:background="@drawable/img_button"
         android:scaleType="fitXY"
         android:src="@drawable/baseline_arrow_circle_down_24"
         android:visibility="visible"
@@ -88,24 +89,24 @@
 
     <ImageView
         android:id="@+id/image_device"
-        android:layout_width="172dp"
+        android:layout_width="170dp"
         android:layout_height="171dp"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
-        android:paddingBottom="5dp"
-        android:src="@drawable/window2"
+        android:scaleType="fitXY"
+        android:src="@drawable/window3"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/blind_left"
-        android:layout_width="151dp"
-        android:layout_height="150dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="150dp"
+        android:layout_height="5dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="9dp"
         android:background="#FF6750A4"
         android:minHeight="1dp"
-        android:theme="?attr/actionBarTheme"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints"
@@ -113,14 +114,14 @@
 
     <View
         android:id="@+id/blind_right"
-        android:layout_width="151dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="245dp"
+        android:layout_width="150dp"
+        android:layout_height="5dp"
+        android:layout_marginTop="9dp"
+
         android:background="#FF6750A4"
         android:minHeight="1dp"
-        android:theme="?attr/actionBarTheme"
-        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints"
         tools:visibility="gone" />
@@ -130,7 +131,7 @@
         android:layout_width="58dp"
         android:layout_height="58dp"
         android:layout_marginTop="1dp"
-        android:background="@null"
+        android:background="@drawable/img_button"
         android:scaleType="fitXY"
         android:src="@drawable/baseline_looks_one_24"
         android:visibility="gone"
@@ -143,7 +144,7 @@
         android:layout_width="58dp"
         android:layout_height="58dp"
         android:layout_marginTop="1dp"
-        android:background="@null"
+        android:background="@drawable/img_button"
         android:scaleType="fitXY"
         android:src="@drawable/baseline_looks_two_24"
         android:visibility="gone"
@@ -156,7 +157,7 @@
         android:layout_width="58dp"
         android:layout_height="58dp"
         android:layout_marginTop="1dp"
-        android:background="@null"
+        android:background="@drawable/img_button"
         android:scaleType="fitXY"
         android:src="@drawable/baseline_looks_3_24"
         android:visibility="gone"
@@ -169,7 +170,7 @@
         android:layout_width="58dp"
         android:layout_height="58dp"
         android:layout_marginTop="1dp"
-        android:background="@null"
+        android:background="@drawable/img_button"
         android:scaleType="fitXY"
         android:src="@drawable/baseline_looks_4_24"
         android:visibility="gone"
@@ -182,12 +183,19 @@
         android:layout_width="58dp"
         android:layout_height="58dp"
         android:layout_marginTop="1dp"
-        android:background="@null"
+        android:background="@drawable/img_button"
         android:scaleType="fitXY"
         android:src="@drawable/baseline_looks_5_24"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/device_preset_4"
         app:layout_constraintTop_toBottomOf="@+id/image_device" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.43309003" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
